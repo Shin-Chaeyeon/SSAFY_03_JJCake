@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="EstimateMapper">
+    <sql id="select-Estimate">
+        SELECT
+        idestimate, seller_id, order_id, contents, price, is_selected, is_deleted
+        FROM estimate
+    </sql>
+
+    <sql id="insert-Estimate">
+        INSERT INTO estimate
+        (seller_id, order_id, contents, price, is_selected, is_deleted)
+        VALUES
+        (#{sellerId}, #{orderId}, #{contents}, #{price}, #{isSelected}, #{isDeleted})
+    </sql>
+
+    <sql id="update-Estimate">
+        UPDATE estimate SET
+        seller_id = #{sellerId},
+        order_id = #{orderId},
+        contents = #{contents},
+        price = #{price},
+        is_selected = #{isSelected},
+        is_deleted = #{isDeleted}
+        WHERE idestimate = #{idestimate}
+    </sql>
+
+    <sql id="delete-Estimate">
+        UPDATE estimate SET is_deleted = 2
+    </sql>
+
+    <sql id="delete-Estimate-Explicitly">
+        DELETE FROM estimate
+    </sql>
+
+    <sql id="where">
+        <where>
+            <if test='idestimate > 0'>
+                AND idestimate = #{idestimate}
+            </if>
+            <if test='sellerId > 0'>
+                AND seller_id = #{sellerId}
+            </if>
+            <if test='orderId > 0'>
+                AND order_id = #{orderId}
+            </if>
+            <if test='contents != null'>
+                AND contents = #{contents}
+            </if>
+            <if test='price > 0'>
+                AND price = #{price}
+            </if>
+            <if test='isSelected > 0'>
+                AND is_selected = #{isSelected}
+            </if>
+            <if test='isDeleted > 0'>
+                AND is_deleted = #{isDeleted}
+            </if>
+            <if test="pageIndex > 0">
+                AND idestimate <![CDATA[<]]> #{pageIndex}
+            </if>
+        </where>
+    </sql>
+
+    <!-- 견적서 CRUD -->
+    <select id="findEstimate" resultType="Estimate">
+        <include refid="select-Estimate"></include>
+        <include refid="where"></include>
+        ORDER BY idestimate DESC limit 15
+    </select>
+
+    <insert id="addEstimate" parameterType="Estimate"
+            useGeneratedKeys="true" keyProperty="idestimate">
+        <include refid="insert-Estimate"></include>
+    </insert>
+
+    <update id="updateEstimate" parameterType="Estimate">
+        <include refid="update-Estimate"></include>
+    </update>
+
+    <update id="deleteEstimate" parameterType="Estimate">
+        <include refid="delete-Estimate"></include>
+        <include refid="where"></include>
+    </update>
+
+    <delete id="deleteEstimateExplicitly" parameterType="Estimate">
+        <include refid="delete-Estimate-Explicitly"></include>
+        <include refid="where"></include>
+    </delete>
+</mapper>

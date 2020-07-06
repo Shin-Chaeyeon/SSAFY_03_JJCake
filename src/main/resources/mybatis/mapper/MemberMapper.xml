@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="MemberMapper">
+    <sql id="select-Member">
+        SELECT
+        idmember, email, password, address, nickname, image_url, admin, certification, is_deleted
+        FROM member
+    </sql>
+
+    <sql id="insert-Member">
+        INSERT INTO member
+        (email, password, address, nickname, image_url, admin, certification, is_deleted)
+        VALUES
+        (#{email}, #{password}, #{address}, #{nickname}, #{imageUrl}, #{admin}, #{certification}, #{isDeleted})
+    </sql>
+
+    <sql id="update-Member">
+        UPDATE member SET
+        email = #{email},
+        password = #{password},
+        address = #{address},
+        nickname = #{nickname},
+        image_url = #{imageUrl},
+        admin = #{admin},
+        certification = #{certification},
+        is_deleted = #{isDeleted}
+        WHERE idmember = #{idmember}
+    </sql>
+
+    <sql id="delete-Member">
+        UPDATE member SET is_deleted = 2
+    </sql>
+
+    <sql id="delete-Member-Explicitly">
+        DELETE FROM member
+    </sql>
+
+    <sql id="where">
+        <where>
+            <if test="idmember > 0">
+                AND idmember = #{idmember}
+            </if>
+            <if test="email != null">
+                AND email = #{email}
+            </if>
+            <if test="password != null">
+                AND password = #{password}
+            </if>
+            <if test="address != null">
+                AND address LIKE '%${address}%'
+            </if>
+            <if test="nickname != null">
+                AND nickname = #{nickname}#
+            </if>
+            <if test="imageUrl != null">
+                AND imageUrl LIKE '%${imageUrl}%'
+            </if>
+            <if test="admin > 0">
+                AND admin = #{admin}
+            </if>
+            <if test="certification > 0">
+                AND certification = #{certification}
+            </if>
+            <if test="isDeleted > 0">
+                AND is_deleted = #{isDeleted}
+            </if>
+        </where>
+    </sql>
+
+    <resultMap id="resultFindMember" type="Member">
+        <id property="idmember" column="idmember"/>
+        <result property="email" column="email"/>
+        <result property="password" column="password"/>
+        <result property="address" column="address"/>
+        <result property="nickname" column="nickname"/>
+        <result property="imageUrl" column="image_url"/>
+        <result property="admin" column="admin"/>
+        <result property="certification" column="certification"/>
+        <result property="isDeleted" column="is_deleted"/>
+
+        <collection property="roles" column="role_name" javaType="ArrayList" ofType="String">
+            <result column="role_name" />
+        </collection>
+    </resultMap>
+
+    <!-- 회원 CRUD -->
+    <select id="findMember" parameterType="Member" resultMap="resultFindMember">
+        SELECT
+        idmember, email, password, address, nickname, image_url, admin, certification, is_deleted, role_name
+        FROM member AS m LEFT OUTER JOIN role AS r ON m.idmember = r.member_id
+        <include refid="where"></include>
+    </select>
+
+    <insert id="addMember" parameterType="Member"
+            useGeneratedKeys="true" keyProperty="idmember">
+        <include refid="insert-Member"></include>
+    </insert>
+    
+    <update id="updateMember" parameterType="Member">
+        <include refid="update-Member"></include>
+    </update>
+
+    <delete id="deleteMember" parameterType="Member">
+        <include refid="delete-Member"></include>
+        <include refid="where"></include>
+    </delete>
+
+    <delete id="deleteMemberExplicitly" parameterType="Member">
+        <include refid="delete-Member-Explicitly"></include>
+        <include refid="where"></include>
+    </delete>
+</mapper>

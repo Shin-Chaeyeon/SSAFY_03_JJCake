@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ReviewMapper">
+    <sql id="select-Review">
+        SELECT
+        idreview, order_id, buyer_id, seller_id, stars, contents, image_url, is_deleted
+        FROM review
+    </sql>
+
+    <sql id="insert-Review">
+        INSERT INTO review
+        (order_id, buyer_id, seller_id, stars, contents, image_url, is_deleted)
+        VALUES
+        (#{orderId}, #{buyerId}, #{sellerId}, #{stars}, #{contents}, #{imageUrl}, #{isDeleted})
+    </sql>
+
+    <sql id="update-Review">
+        UPDATE review SET
+        order_id = #{orderId},
+        buyer_id = #{buyerId},
+        seller_id = #{sellerId},
+        stars = #{stars},
+        contents = #{contents},
+        image_url = #{imageUrl},
+        is_deleted = #{isDeleted}
+        WHERE idreview = #{idreview}
+    </sql>
+
+    <sql id="delete-Review">
+        UPDATE review SET is_deleted = 2
+    </sql>
+
+    <sql id="delete-Review-Explicitly">
+        DELETE FROM review
+    </sql>
+
+    <sql id="where">
+        <where>
+            <if test="idreview > 0">
+                AND idreview = #{idreview}
+            </if>
+            <if test="orderId > 0">
+                AND order_id = #{orderId}
+            </if>
+            <if test="buyerId > 0">
+                AND buyer_id = #{buyerId}
+            </if>
+            <if test="sellerId > 0">
+                AND seller_id = #{sellerId}
+            </if>
+            <if test="stars > 0">
+                AND stars = #{stars}
+            </if>
+            <if test="contents != null">
+                AND contents = #{contents}
+            </if>
+            <if test="imageUrl != null">
+                AND image_url = #{imageUrl}
+            </if>
+            <if test="isDeleted > 0">
+                AND is_deleted = #{isDeleted}
+            </if>
+            <if test="pageIndex > 0">
+                AND idreview <![CDATA[<]]> #{pageIndex}
+            </if>
+        </where>
+    </sql>
+
+    <!-- 리뷰 CRUD -->
+    <select id="findReview" parameterType="Review" resultType="Review">
+        <include refid="select-Review"></include>
+        <include refid="where"></include>
+        ORDER BY idreview DESC limit 15
+    </select>
+
+    <insert id="addReview" parameterType="Review"
+            useGeneratedKeys="true" keyProperty="idreview">
+        <include refid="insert-Review"></include>
+    </insert>
+
+    <update id="updateReview" parameterType="Review">
+        <include refid="update-Review"></include>
+    </update>
+
+    <delete id="deleteReview" parameterType="Review">
+        <include refid="delete-Review"></include>
+        <include refid="where"></include>
+    </delete>
+
+    <delete id="deleteReviewExplicitly" parameterType="Review">
+        <include refid="delete-Review-Explicitly"></include>
+        <include refid="where"></include>
+    </delete>
+</mapper>

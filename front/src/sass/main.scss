@@ -1,0 +1,130 @@
+@import "../services/vuestic-ui/styles";
+@import "./icons/icons.scss";
+
+// Temporary colors fix for 2.1.
+$vue-purple: #6c7fee;
+$purple-box-shadow: 0 4px 9.6px 0.4px rgba($vue-purple, 0.5);
+
+body {
+  font-family: 'Noto Sans KR', sans-serif, NanumGothic, '나눔고딕', Dotum, '돋움', Helvetica, "Apple SD Gothic Neo";
+}
+
+body.va-inverted-color {
+  background: linear-gradient(to bottom, rgb(255, 255, 255) 0%, rgb(247, 238, 213) 100%);
+
+  ::selection {
+    background-color: $vue-purple;
+    color: $white;
+  }
+
+  .link,
+  .title {
+    color: $vue-purple;
+  }
+
+  .va-data-table {
+    th.sortable {
+      color: $vue-purple;
+    }
+  }
+
+  .va-dropdown {
+    .profile-dropdown,
+    .language-dropdown,
+    .message-dropdown,
+    .notification-dropdown {
+      &__item {
+        &.active,
+        &:hover {
+          color: $vue-purple;
+        }
+      }
+    }
+  }
+
+  .flatpickr-calendar {
+    ::selection {
+      background-color: $vue-purple;
+      color: $white;
+    }
+
+    .flatpickr-days {
+      .dayContainer {
+        .flatpickr-day {
+          &.selected,
+          &.selected:hover,
+          &.startRange,
+          &.endRange,
+          &:hover,
+          &.inRange:hover {
+            background: $vue-purple;
+            color: white;
+          }
+
+          &.inRange {
+            color: $vue-purple;
+          }
+        }
+      }
+    }
+
+    .numInputWrapper span {
+      border: none;
+
+      &.arrowUp,
+      &.arrowDown {
+        &:hover {
+          background: none;
+        }
+      }
+
+      &.arrowUp::after {
+        border-style: solid;
+        border-width: 0 0.25rem 0.25rem 0.25rem;
+        border-color: transparent transparent $vue-purple transparent;
+      }
+
+      &.arrowDown::after {
+        border-style: solid;
+        border-width: 0.25rem 0.25rem 0 0.25rem;
+        border-color: $vue-purple transparent transparent transparent;
+      }
+    }
+  }
+
+  .toasted-container {
+    .toasted.vuestic-toast {
+      box-shadow: $purple-box-shadow;
+
+      i,
+      i.fa {
+        color: $vue-purple;
+      }
+    }
+  }
+
+  .medium-editor-toolbar,
+  .medium-editor-toolbar-form,
+  .medium-editor-toolbar-actions,
+  .medium-editor-toolbar-anchor-preview {
+    background-color: $vue-purple;
+  }
+
+  .medium-editor-toolbar {
+    .medium-editor-action {
+      background-color: $vue-purple;
+
+      &.medium-editor-button-active {
+        background-color: darken($vue-purple, 15%);
+      }
+    }
+  }
+
+  .medium-toolbar-arrow-under::after {
+    border-color: $vue-purple transparent transparent transparent;
+  }
+
+  .medium-toolbar-arrow-over::before {
+    border-color: transparent transparent $vue-purple transparent;
+  }
+}

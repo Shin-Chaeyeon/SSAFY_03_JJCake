@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="OrderMapper">
+    <sql id="select-Order">
+        SELECT
+        idorder, buyer_id, seller_id, title, contents,
+        status, max_price, radius, receive_way, receive_date,
+        create_date, due_date, image_url, cake_flavor, cake_size,
+        cake_shape, cake_background_color, cake_cream_color, cake_lettering, cake_border_position,
+        is_deleted
+        FROM `order`
+    </sql>
+
+    <sql id="insert-Order">
+        INSERT INTO `order`
+        (buyer_id, title, contents,
+        status, max_price, radius, receive_way, receive_date,
+        create_date, due_date, image_url, cake_flavor, cake_size,
+        cake_shape, cake_background_color, cake_cream_color, cake_lettering, cake_border_position,
+        is_deleted)
+        VALUES
+        (#{buyerId}, #{title}, #{contents},
+        #{status}, #{maxPrice}, #{radius}, #{receiveWay}, STR_TO_DATE(#{receiveDate}, '%Y-%m-%d %H:%i:%s'),
+        DATE_ADD(NOW(), INTERVAL 9 HOUR), STR_TO_DATE(#{dueDate}, '%Y-%m-%d %H:%i:%s'), #{imageUrl}, #{cakeFlavor}, #{cakeSize},
+        #{cakeShape}, #{cakeBackgroundColor}, #{cakeCreamColor}, #{cakeLettering}, #{cakeBorderPosition},
+        #{isDeleted})
+    </sql>
+
+    <sql id="update-Order">
+        UPDATE `order` SET
+        buyer_id = #{buyerId},
+        seller_id = #{sellerId},
+        title = #{title},
+        contents = #{contents},
+        status = #{status},
+        max_price = #{maxPrice},
+        radius = #{radius},
+        receive_way = #{receiveWay},
+        receive_date = STR_TO_DATE(#{receiveDate}, '%Y-%m-%d %H:%i:%s'),
+        due_date = STR_TO_DATE(#{dueDate}, '%Y-%m-%d %H:%i:%s'),
+        image_url = #{imageUrl},
+        cake_flavor = #{cakeFlavor},
+        cake_size = #{cakeSize},
+        cake_shape = #{cakeShape},
+        cake_background_color = #{cakeBackgroundColor},
+        cake_cream_color = #{cakeCreamColor},
+        cake_lettering = #{cakeLettering},
+        cake_border_position = #{cakeBorderPosition},
+        is_deleted = #{isDeleted}
+        WHERE idorder = #{idorder}
+    </sql>
+
+    <sql id="delete-Order">
+        UPDATE `order` SET is_deleted = 2
+    </sql>
+
+    <sql id="delete-Order-Explicitly">
+        DELETE FROM `order`
+    </sql>
+
+    <sql id="where">
+        <where>
+            <if test="idorder > 0">
+                AND idorder = #{idorder}
+            </if>
+            <if test="buyerId > 0">
+                AND buyer_id = #{buyerId}
+            </if>
+            <if test="sellerId > 0">
+                AND seller_id = #{sellerId}
+            </if>
+            <if test="title != null">
+                AND title LIKE %${title}%
+            </if>
+            <if test="contents != null">
+                AND contents LIKE %${contents}%
+            </if>
+            <if test="status > 0">
+                AND status = #{status}
+            </if>
+            <if test="maxPrice > 0">
+                AND max_price = #{maxPrice}
+            </if>
+            <if test="radius > 0">
+                AND radius = #{radius}
+            </if>
+            <if test="receiveWay > 0">
+                AND receive_way = #{receiveWay}
+            </if>
+            <if test="receiveDate > 0">
+                AND receive_date = STR_TO_DATE(#{receiveDate}, '%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="createDate != null">
+                AND create_date = STR_TO_DATE(#{createDate}, '%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="dueDate != null">
+                AND due_date = STR_TO_DATE(#{dueDate}, '%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="imageUrl != null">
+                AND image_url = #{imageUrl}
+            </if>
+            <if test="cakeFlavor != null">
+                AND cake_flavor = #{cakeFlavor}
+            </if>
+            <if test="cakeSize != null">
+                AND cake_size = #{cakeSize}
+            </if>
+            <if test="cakeShape != null">
+                AND cake_shape = #{cakeShape}
+            </if>
+            <if test="cakeBackgroundColor != null">
+                AND cake_background_color = #{cakeBackgroundColor}
+            </if>
+            <if test="cakeCreamColor != null">
+                AND cake_cream_color = #{cakeCreamColor}
+            </if>
+            <if test="cakeLettering != null">
+                AND cake_lettering = #{cakeLettering}
+            </if>
+            <if test="cakeBorderPosition != null">
+                AND cake_border_position = #{cakeBorderPosition}
+            </if>
+            <if test="isDeleted > 0">
+                AND is_deleted = #{isDeleted}
+            </if>
+            <if test="pageIndex > 0">
+                AND idorder <![CDATA[<]]> #{pageIndex}
+            </if>
+        </where>
+    </sql>
+
+    <!-- 주문 CRUD -->
+    <select id="findOrder" parameterType="Order" resultType="Order">
+        <include refid="select-Order"></include>
+        <include refid="where"></include>
+        ORDER BY idorder DESC limit 15
+    </select>
+
+    <insert id="addOrder" parameterType="Order"
+            useGeneratedKeys="true" keyProperty="idorder">
+        <include refid="insert-Order"></include>
+    </insert>
+
+    <update id="updateOrder" parameterType="Order">
+        <include refid="update-Order"></include>
+    </update>
+
+    <delete id="deleteOrder" parameterType="Order">
+        <include refid="delete-Order"></include>
+        <include refid="where"></include>
+    </delete>
+
+    <delete id="deleteOrderExplicitly" parameterType="Order">
+        <include refid="delete-Order-Explicitly"></include>
+        <include refid="where"></include>
+    </delete>
+</mapper>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="MarketMapper">
+    <sql id="select-Market">
+        SELECT
+        idmarket, seller_id, name, intro, open_time, close_time, day_off,
+        phone_number, address, delivery_area, business_registration_number, is_deleted
+        FROM market
+    </sql>
+
+    <sql id="insert-Market">
+        INSERT INTO market
+        (idmarket, seller_id, name, intro, open_time, close_time, day_off,
+        phone_number, address, delivery_area, business_registration_number, is_deleted)
+        VALUES
+        (#{idmarket}, #{sellerId}, #{name}, #{intro}, #{openTime}, #{closeTime},
+        #{dayOff}, #{phoneNumber}, #{address}, #{deliveryArea}, #{businessRegistrationNumber}, 1)
+    </sql>
+
+    <sql id="update-Market">
+        UPDATE market SET
+        name = #{name},
+        intro = #{intro},
+        open_time = #{openTime},
+        close_time = #{closeTime},
+        day_off = #{dayOff},
+        phone_number = #{phoneNumber},
+        address = #{address},
+        delivery_area = #{deliveryArea},
+        business_registration_number = #{businessRegistrationNumber},
+        is_deleted = #{isDeleted}
+        WHERE idmarket = #{idmarket}
+    </sql>
+
+    <sql id="delete-Market">
+        UPDATE market SET is_deleted = 2
+    </sql>
+
+    <sql id="delete-Market-Explicitly">
+        DELETE FROM market
+    </sql>
+
+    <sql id="where">
+        <where>
+            <if test='idmarket > 0'>
+                AND idmarket = #{idmarket}
+            </if>
+            <if test='sellerId > 0'>
+                AND seller_id = #{sellerId}
+            </if>
+            <if test='name != null'>
+                AND name = #{name}
+            </if>
+            <if test='intro != null'>
+                AND intro = #{intro}
+            </if>
+            <if test='openTime != null'>
+                AND open_time = #{openTime}
+            </if>
+            <if test='closeTime != null'>
+                AND close_time = #{closeTime}
+            </if>
+            <if test='dayOff != null'>
+                AND day_off = #{dayOff}
+            </if>
+            <if test='phoneNumber != null'>
+                AND phone_number = #{phoneNumber}
+            </if>
+            <if test='address != null'>
+                AND address = #{address}
+            </if>
+            <if test='deliveryArea != null'>
+                AND delivery_area = #{deliveryArea}
+            </if>
+            <if test='businessRegistrationNumber != null'>
+                AND business_registration_number = #{businessRegistrationNumber}
+            </if>
+            <if test='isDeleted > 0'>
+                AND is_deleted = #{isDeleted}
+            </if>
+        </where>
+    </sql>
+
+    <!-- 가게정보 CRUD -->
+    <select id="findMarket" resultType="Market">
+        <include refid="select-Market"></include>
+        <include refid="where"></include>
+    </select>
+
+    <insert id="addMarket" parameterType="Market"
+            useGeneratedKeys="true" keyProperty="idmarket">
+        <include refid="insert-Market"></include>
+    </insert>
+
+    <update id="updateMarket" parameterType="Market">
+        <include refid="update-Market"></include>
+    </update>
+
+    <update id="deleteMarket" parameterType="Market">
+        <include refid="delete-Market"></include>
+        <include refid="where"></include>
+    </update>
+
+    <delete id="deleteMarketExplicitly" parameterType="Market">
+        <include refid="delete-Market-Explicitly"></include>
+        <include refid="where"></include>
+    </delete>
+</mapper>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="RoleMapper">
+    <sql id="select-Role">
+        SELECT
+        idrole, member_id, role_name
+        FROM role
+    </sql>
+
+    <sql id="insert-Role">
+        INSERT INTO role
+        (member_id, role_name)
+        VALUES
+        (#{memberId}, #{roleName})
+    </sql>
+
+    <sql id="update-Role">
+        UPDATE role SET
+        member_id = #{memberId},
+        role_name = #{roleName}
+        WHERE idrole = #{idrole}
+    </sql>
+
+    <sql id="delete-Role">
+        UPDATE role SET is_deleted = 2
+    </sql>
+
+    <sql id="delete-Role-Explicitly">
+        DELETE FROM role
+    </sql>
+
+    <sql id="where">
+        <where>
+            <if test="idrole > 0">
+                AND idrole = #{idrole}
+            </if>
+            <if test="memberId > 0">
+                AND member_id = #{memberId}
+            </if>
+            <if test="roleName != null">
+                AND role_name = #{roleName}
+            </if>
+        </where>
+    </sql>
+
+    <!-- 역할 CRUD -->
+    <select id="findRole" parameterType="Role" resultType="Role">
+        <include refid="select-Role"></include>
+        <include refid="where"></include>
+    </select>
+
+    <insert id="addRole" parameterType="Role"
+            useGeneratedKeys="true" keyProperty="idrole">
+        <include refid="insert-Role"></include>
+    </insert>
+    
+    <update id="updateRole" parameterType="Role">
+        <include refid="update-Role"></include>
+    </update>
+
+    <delete id="deleteRole" parameterType="Role">
+        <include refid="delete-Role"></include>
+        <include refid="where"></include>
+    </delete>
+
+    <delete id="deleteRoleExplicitly" parameterType="Role">
+        <include refid="delete-Role-Explicitly"></include>
+        <include refid="where"></include>
+    </delete>
+</mapper>

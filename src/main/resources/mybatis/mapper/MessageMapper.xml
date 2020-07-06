@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="MessageMapper">
+    <sql id="select-Message">
+        SELECT
+        idmessage, sender, receiver, title, contents, send_date, is_read
+        FROM message
+    </sql>
+
+    <sql id="insert-Message">
+        INSERT INTO message
+        (sender, receiver, title, contents, send_date, is_read)
+        VALUES
+        (#{sender}, #{receiver}, #{title}, #{contents}, DATE_ADD(NOW(), INTERVAL 9 HOUR), #{isRead})
+    </sql>
+
+    <sql id="update-Message">
+        UPDATE message SET
+        sender = #{sender},
+        receiver = #{receiver},
+        title = #{title},
+        contents = #{contents},
+        send_date = STR_TO_DATE(#{sendDate}, '%Y-%m-%d %H:%i:%s'),
+        is_read = #{isRead}
+        WHERE idmessage = #{idmessage}
+    </sql>
+
+    <sql id="delete-Message-Explicitly">
+        DELETE FROM message
+    </sql>
+
+    <sql id="where">
+        <where>
+            <if test='idmessage > 0'>
+                AND idmessage = #{idmessage}
+            </if>
+            <if test='sender > 0'>
+                AND sender = #{sender}
+            </if>
+            <if test='receiver > 0'>
+                AND receiver = #{receiver}
+            </if>
+            <if test='title != null'>
+                AND title = #{title}
+            </if>
+            <if test='contents != null'>
+                AND contents = #{contents}
+            </if>
+            <if test='sendDate != null'>
+                AND send_date = STR_TO_DATE(#{sendDate}, '%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test='isRead > 0'>
+                AND is_read = #{isRead}
+            </if>
+            <if test="pageIndex > 0">
+                AND idmessage <![CDATA[<]]> #{pageIndex}
+            </if>
+        </where>
+    </sql>
+
+    <resultMap id="resultFindMessage" type="Message">
+        <id property="idmessage" column="idmessage" />
+        <result property="sender" column="sender" />
+        <result property="receiver" column="receiver" />
+        <result property="title" column="title" />
+        <result property="contents" column="contents" />
+        <result property="sendDate" column="send_date" />
+        <result property="isRead" column="is_read" />
+        <result property="marketName" column="name" />
+        <result property="nickname" column="nickname" />
+    </resultMap>
+
+    <!-- 쪽지 CRUD -->
+    <select id="findMessage" parameterType="Message" resultMap="resultFindMessage">
+        SELECT
+        msg.idmessage, msg.sender, msg.receiver, msg.title, msg.contents, msg.send_date, msg.is_read, mkt.name, mbr.nickname
+        FROM message AS msg LEFT OUTER JOIN member AS mbr ON
+        <if test="flag == 1">
+            msg.sender = mbr.idmember
+        </if>
+        <if test="flag == 2">
+            msg.receiver = mbr.idmember
+        </if>
+        LEFT OUTER JOIN market AS mkt ON mbr.idmember = mkt.seller_id
+        <include refid="where"></include>
+        ORDER BY msg.idmessage DESC limit 15
+    </select>
+
+    <insert id="addMessage" parameterType="Message"
+            useGeneratedKeys="true" keyProperty="idmessage">
+        <include refid="insert-Message"></include>
+    </insert>
+
+    <update id="updateMessage" parameterType="Message">
+        <include refid="update-Message"></include>
+    </update>
+
+    <delete id="deleteMessageExplicitly" parameterType="Message">
+        <include refid="delete-Message-Explicitly"></include>
+        <include refid="where"></include>
+    </delete>
+</mapper>

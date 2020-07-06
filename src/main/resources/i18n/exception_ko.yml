@@ -1,0 +1,86 @@
+# exception_ko ver
+
+# 알 수 없는 에러
+
+unKnown:
+  code: "-9999"
+  msg: "알 수 없는 오류가 발생하였습니다."
+
+# 회원 관련 에러
+
+userNotFound:
+  code: "-1000"
+  msg: "존재하지 않는 회원입니다."
+
+emailSigninFailed:
+  code: "-1001"
+  msg: "계정이 존재하지 않거나 이메일 또는 비밀번호가 정확하지 않습니다."
+
+existingUser:
+  code: "-1002"
+  msg: "이미 가입한 회원입니다. 로그인을 해주십시오."
+
+duplicateEmail:
+  code: "-1003"
+  msg: "이메일이 중복 되었습니다."
+
+duplicateNickname:
+  code: "-1004"
+  msg: "닉네임이 중복 되었습니다."
+
+# 권한 에러
+
+entryPointException:
+  code: "-2001"
+  msg: "해당 리소스에 접근하기 위한 권한이 없습니다."
+
+accessDenied:
+  code: "-2002"
+  msg: "보유한 권한으로 접근할수 없는 리소스 입니다."
+
+# 통신 에러
+communicationError:
+  code: "-3001"
+  msg: "통신 중 오류가 발생하였습니다."
+
+# 이미지 관련 에러
+
+saveImageFaild:
+  code: "-4001"
+  msg: "이미지 저장에 실패 하였습니다."
+
+deleteImageFaild:
+  code: "-4002"
+  msg: "이미지 삭제에 실패 하였습니다."
+
+# 조회 실패 에러
+
+portfolioNotFound:
+  code: "-5001"
+  msg: "포트폴리오가 존재하지 않습니다."
+
+reviewNotFound:
+  code: "-5002"
+  msg: "리뷰가 존재하지 않습니다."
+
+orderNotFound:
+  code: "-5003"
+  msg: "주문이 존재하지 않습니다."
+
+messageNotFound:
+  code: "-5004"
+  msg: "쪽지가 존재하지 않습니다."
+
+estimateNotFound:
+  code: "-5005"
+  msg: "견적서가 존재하지 않습니다."
+
+marketNotFound:
+  code: "-5006"
+  msg: "마켓이 존재하지 않습니다."
+
+# 데이터베이스 에러
+
+databaseError:
+  code: "-6000"
+  mag: "데이터베이스 에러 입니다."

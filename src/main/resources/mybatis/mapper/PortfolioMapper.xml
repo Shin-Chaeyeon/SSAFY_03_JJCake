@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="PortfolioMapper">
+    <sql id="select-Portfolio">
+        SELECT
+        idportfolio, seller_id, title, contents, image_url, is_deleted
+        FROM portfolio
+    </sql>
+
+    <sql id="insert-Portfolio">
+        INSERT INTO portfolio
+        (seller_id, title, contents, image_url, is_deleted)
+        VALUES
+        (#{sellerId}, #{title}, #{contents}, #{imageUrl}, #{isDeleted})
+    </sql>
+
+    <sql id="update-Portfolio">
+        UPDATE portfolio SET
+        seller_id = #{sellerId},
+        title = #{title},
+        contents = #{contents},
+        image_url = #{imageUrl},
+        is_deleted = #{isDeleted}
+        WHERE idportfolio = #{idportfolio}
+    </sql>
+
+    <sql id="delete-Portfolio">
+        UPDATE portfolio SET is_deleted = 2
+    </sql>
+
+    <sql id="delete-Portfolio-Explicitly">
+        DELETE FROM portfolio
+    </sql>
+
+    <sql id="where">
+        <where>
+            <if test='idportfolio > 0'>
+                AND idportfolio = #{idportfolio}
+            </if>
+            <if test='sellerId > 0'>
+                AND seller_id = #{sellerId}
+            </if>
+            <if test='title != null'>
+                AND title LIKE '%${title}%'
+            </if>
+            <if test='contents != null'>
+                AND contents LIKE '%${contents}%'
+            </if>
+            <if test='imageUrl != null'>
+                AND image_url = #{imageUrl}
+            </if>
+            <if test='isDeleted > 0'>
+                AND is_deleted = #{isDeleted}
+            </if>
+            <if test="pageIndex > 0">
+                AND idportfolio <![CDATA[<]]> #{pageIndex}
+            </if>
+        </where>
+    </sql>
+
+    <!-- 포트폴리오 CRUD -->
+    <select id="findPortfolio" parameterType="Portfolio" resultType="Portfolio">
+        <include refid="select-Portfolio"></include>
+        <include refid="where"></include>
+        ORDER BY idportfolio DESC limit 15
+    </select>
+
+    <insert id="addPortfolio" parameterType="Portfolio"
+            useGeneratedKeys="true" keyProperty="idportfolio">
+        <include refid="insert-Portfolio"></include>
+    </insert>
+
+    <update id="updatePortfolio" parameterType="Portfolio">
+        <include refid="update-Portfolio"></include>
+    </update>
+
+    <update id="deletePortfolio" parameterType="Portfolio">
+        <include refid="delete-Portfolio"></include>
+        <include refid="where"></include>
+    </update>
+
+    <delete id="deletePortfolioExplicitly" parameterType="Portfolio">
+        <include refid="delete-Portfolio-Explicitly"></include>
+        <include refid="where"></include>
+    </delete>
+</mapper>
